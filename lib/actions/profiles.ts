@@ -66,8 +66,13 @@ export async function createProfileForUser(
     primary_role: DEFAULT_PRIMARY_ROLE,
     city: DEFAULT_CITY,
     bio: DEFAULT_BIO,
+    specialties: [],
+    experience_summary: null,
     resume_url: null,
     availability: null,
+    years_experience: null,
+    travel_readiness: null,
+    portfolio_url: null,
   };
 
   const { data, error } = await supabase
@@ -164,17 +169,18 @@ export async function updateProfile(formData: FormData) {
     throw new Error("You must be logged in to update your profile");
   }
 
-  const fullName = formData.get("fullName") as string;
-  const username = formData.get("username") as string;
-  const primaryRole = formData.get("primaryRole") as string;
-  const city = formData.get("city") as string;
-  const bio = formData.get("bio") as string;
-  const experienceSummary = formData.get("experienceSummary") as string;
-  const resumeUrl = formData.get("resumeUrl") as string;
-  const availability = formData.get("availability") as string;
-  const yearsExperience = formData.get("yearsExperience") as string;
-  const travelReadiness = formData.get("travelReadiness") as string;
-  const portfolioUrl = formData.get("portfolioUrl") as string;
+  const fullName = (formData.get("fullName") ?? "") as string;
+  const username = (formData.get("username") ?? "") as string;
+  const primaryRole = (formData.get("primaryRole") ?? "") as string;
+  const city = (formData.get("city") ?? "") as string;
+  const bio = (formData.get("bio") ?? "") as string;
+  const experienceSummary = (formData.get("experienceSummary") ?? "") as string;
+  const specialtiesRaw = (formData.get("specialties") ?? "") as string;
+  const resumeUrl = (formData.get("resumeUrl") ?? "") as string;
+  const availability = (formData.get("availability") ?? "") as string;
+  const yearsExperience = (formData.get("yearsExperience") ?? "") as string;
+  const travelReadiness = (formData.get("travelReadiness") ?? "") as string;
+  const portfolioUrl = (formData.get("portfolioUrl") ?? "") as string;
 
   if (!fullName || !username || !primaryRole || !city) {
     throw new Error("Required fields must be filled");
@@ -183,6 +189,16 @@ export async function updateProfile(formData: FormData) {
   const normalizedUsername = normalizeUsername(username);
   if (!normalizedUsername) {
     throw new Error("Please choose a valid username.");
+  }
+
+  const specialties = specialtiesRaw
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const yearsExperienceNumber = yearsExperience ? parseInt(yearsExperience, 10) : null;
+  if (yearsExperience && Number.isNaN(yearsExperienceNumber)) {
+    throw new Error("Years of Experience must be a valid number.");
   }
 
   const { data: existingProfile } = await supabase
@@ -204,10 +220,11 @@ export async function updateProfile(formData: FormData) {
       primary_role: primaryRole,
       city,
       bio,
-      experience_summary: experienceSummary,
+      specialties,
+      experience_summary: experienceSummary || null,
       resume_url: resumeUrl || null,
       availability: availability || null,
-      years_experience: yearsExperience ? parseInt(yearsExperience) : null,
+      years_experience: yearsExperienceNumber,
       travel_readiness: travelReadiness || null,
       portfolio_url: portfolioUrl || null,
     })
