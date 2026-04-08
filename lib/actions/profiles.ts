@@ -128,12 +128,20 @@ export async function ensureProfileForUser() {
     });
   } catch (error) {
     const message = (error as { message?: string }).message || "Unable to bootstrap your profile.";
-    if (message.includes("duplicate")) {
-      return await createProfileForUser(user.id, fallbackUsername, fullName, {
-        email: user.email,
-        full_name: fullName,
-      });
+    
+    // If username is taken, try with fallback username
+    if (message.includes("duplicate") && username !== fallbackUsername) {
+      try {
+        return await createProfileForUser(user.id, fallbackUsername, fullName, {
+          email: user.email,
+          full_name: fullName,
+        });
+      } catch {
+        // Even fallback failed, which shouldn't happen unless database is broken
+        throw new Error("Unable to create your profile. Please contact support.");
+      }
     }
+    
     throw new Error(message);
   }
 }

@@ -43,6 +43,22 @@ export async function POST(request: NextRequest) {
   });
 
   const normalizedUsername = normalizeUsername(username) || "user";
+  
+  // Step 1: Check if username is already taken BEFORE signup
+  const { data: existingProfile } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("username", normalizedUsername)
+    .maybeSingle();
+
+  if (existingProfile) {
+    return NextResponse.json(
+      { error: "Username is already taken. Pick another handle." },
+      { status: 409 },
+    );
+  }
+
+  // Step 2: Create auth user with profile metadata
   const { data, error } = await supabase.auth.signUp({
     email: email.trim(),
     password: password.trim(),
@@ -59,28 +75,23 @@ export async function POST(request: NextRequest) {
   }
 
   const user = data.user;
+  
+  // Step 3: Attempt to create profile, but don't fail signup if it does
+  // The profile will be bootstrapped lazily on first authenticated request
   if (user) {
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: user.id,
-      username: normalizedUsername,
-      full_name: fullName.trim(),
-      primary_role: "Touring Professional",
-      city: "Unknown",
-      bio: "",
-    });
-
-    if (profileError) {
-      if (profileError.message?.includes("duplicate")) {
-        return NextResponse.json(
-          { error: "Username is already taken. Pick another handle." },
-          { status: 409 },
-        );
-      }
-
-      return NextResponse.json(
-        { error: "Account created, but profile setup failed. Please contact support." },
-        { status: 500 },
-      );
+    try {
+      await supabase.from("profiles").insert({
+        id: user.id,
+        username: normalizedUsername,
+        full_name: fullName.trim(),
+        primary_role: "Touring Professional",
+        city: "Unknown",
+        bio: "",
+      });
+      // Profile created successfully
+    } catch {
+      // Profile creation failed, but that's OK
+      // ensureProfileForUser() will handle bootstrap on next auth request
     }
   }
 

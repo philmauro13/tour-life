@@ -56,8 +56,19 @@ export default function SignupPage() {
         return;
       }
 
-      setSuccess("Account created. Redirecting to your dashboard…");
-      router.replace("/dashboard");
+      // Account created successfully
+      setSuccess(`Account created for ${email.trim()}. Please check your email to confirm your account, then sign in.`);
+      
+      // Clear form
+      setFullName("");
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      
+      // Redirect to login after a short delay to let user read the message
+      setTimeout(() => {
+        router.replace("/login");
+      }, 3000);
     } catch {
       setError("Unable to connect to the server. Please try again in a moment.");
     } finally {
@@ -129,7 +140,7 @@ export default function SignupPage() {
 
           {success ? (
             <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-200" aria-live="polite">
-              {success}
+              ✓ {success}
             </div>
           ) : null}
 
