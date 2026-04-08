@@ -44,6 +44,61 @@ export default async function ProfilePage({
             <p className="mt-4 text-white/68 leading-7">{profile.experience_summary}</p>
           </div>
         </div>
+
+        <div className="mt-6 grid gap-6 md:grid-cols-3">
+          {profile.years_experience && (
+            <div className="glass rounded-[28px] p-6">
+              <h2 className="text-lg font-semibold">Years of Experience</h2>
+              <p className="mt-4 text-2xl font-bold text-cyan-400">{profile.years_experience} years</p>
+            </div>
+          )}
+          {profile.availability && (
+            <div className="glass rounded-[28px] p-6">
+              <h2 className="text-lg font-semibold">Availability</h2>
+              <p className="mt-4 text-white/68 leading-7">{profile.availability}</p>
+            </div>
+          )}
+          {profile.travel_readiness && (
+            <div className="glass rounded-[28px] p-6">
+              <h2 className="text-lg font-semibold">Travel Readiness</h2>
+              <p className="mt-4 text-white/68 leading-7">{profile.travel_readiness}</p>
+            </div>
+          )}
+        </div>
+
+        {(profile.resume_url || profile.portfolio_url) && (
+          <div className="mt-6 glass rounded-[28px] p-6">
+            <h2 className="text-lg font-semibold">Links</h2>
+            <div className="mt-4 flex flex-wrap gap-4">
+              {profile.resume_url && (
+                <a
+                  href={profile.resume_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  View Resume
+                </a>
+              )}
+              {profile.portfolio_url && (
+                <a
+                  href={profile.portfolio_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  View Portfolio
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

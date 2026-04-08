@@ -25,6 +25,9 @@ interface ApplicationWithDetails {
     experience_summary: string | null;
     resume_url: string | null;
     availability: string | null;
+    years_experience: number | null;
+    travel_readiness: string | null;
+    portfolio_url: string | null;
   } | null;
 }
 
@@ -110,6 +113,37 @@ export function ApplicationReviewCard({ application }: ApplicationReviewCardProp
               Availability
             </h5>
             <p className="text-sm text-white/70">{profile.availability}</p>
+          </div>
+        )}
+
+        {profile.years_experience && (
+          <div>
+            <h5 className="text-sm font-medium text-white/80 mb-1">Years of Experience</h5>
+            <p className="text-sm text-white/70">{profile.years_experience} years</p>
+          </div>
+        )}
+
+        {profile.travel_readiness && (
+          <div>
+            <h5 className="text-sm font-medium text-white/80 mb-1 flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              Travel Readiness
+            </h5>
+            <p className="text-sm text-white/70">{profile.travel_readiness}</p>
+          </div>
+        )}
+
+        {profile.portfolio_url && (
+          <div>
+            <a
+              href={profile.portfolio_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              View Portfolio
+            </a>
           </div>
         )}
 

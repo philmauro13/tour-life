@@ -64,6 +64,18 @@ export default async function SettingsProfilePage() {
           <label className="text-sm text-white/65">Availability</label>
           <Input name="availability" defaultValue={profile.availability || ""} placeholder="e.g., Available immediately, 2 weeks notice" />
         </div>
+        <div className="space-y-2">
+          <label className="text-sm text-white/65">Years of Experience</label>
+          <Input name="yearsExperience" type="number" min="0" defaultValue={profile.years_experience || ""} placeholder="e.g., 5" />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm text-white/65">Travel Readiness</label>
+          <Input name="travelReadiness" defaultValue={profile.travel_readiness || ""} placeholder="e.g., Willing to travel anywhere, US only, Local only" />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm text-white/65">Portfolio URL</label>
+          <Input name="portfolioUrl" type="url" defaultValue={profile.portfolio_url || ""} placeholder="https://..." />
+        </div>
         <div className="mt-4 md:col-span-2">
           <Button type="submit">Save profile</Button>
         </div>

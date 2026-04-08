@@ -10,6 +10,11 @@ create table if not exists public.profiles (
   avatar_url text,
   specialties text[] default '{}',
   experience_summary text,
+  resume_url text,
+  availability text,
+  years_experience integer,
+  travel_readiness text,
+  portfolio_url text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

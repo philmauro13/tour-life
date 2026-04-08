@@ -172,6 +172,9 @@ export async function updateProfile(formData: FormData) {
   const experienceSummary = formData.get("experienceSummary") as string;
   const resumeUrl = formData.get("resumeUrl") as string;
   const availability = formData.get("availability") as string;
+  const yearsExperience = formData.get("yearsExperience") as string;
+  const travelReadiness = formData.get("travelReadiness") as string;
+  const portfolioUrl = formData.get("portfolioUrl") as string;
 
   if (!fullName || !username || !primaryRole || !city) {
     throw new Error("Required fields must be filled");
@@ -204,6 +207,9 @@ export async function updateProfile(formData: FormData) {
       experience_summary: experienceSummary,
       resume_url: resumeUrl || null,
       availability: availability || null,
+      years_experience: yearsExperience ? parseInt(yearsExperience) : null,
+      travel_readiness: travelReadiness || null,
+      portfolio_url: portfolioUrl || null,
     })
     .eq("id", user.id);
 

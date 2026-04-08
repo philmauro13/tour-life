@@ -14,6 +14,9 @@ export interface Profile {
   experience_summary?: string | null;
   resume_url?: string | null;
   availability?: string | null;
+  years_experience?: number | null;
+  travel_readiness?: string | null;
+  portfolio_url?: string | null;
   created_at: string;
   updated_at: string;
 }
