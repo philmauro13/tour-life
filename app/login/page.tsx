@@ -46,14 +46,20 @@ export default function LoginPage() {
       if (!response.ok || data.error) {
         const message = data.error || "We couldn't sign you in. Double-check your credentials and try again.";
         setError(message);
+        setIsSubmitting(false);
         return;
       }
 
       setSuccess("Signed in successfully. Redirecting to your dashboard…");
+      
+      // Wait a bit longer to ensure auth state updates in the provider
+      // This gives the browser time to process the response cookies
+      // and for the SupabaseAuthProvider to detect the auth state change
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
       router.replace("/dashboard");
     } catch {
       setError("Unable to connect to the server. Please try again in a moment.");
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -99,7 +105,7 @@ export default function LoginPage() {
 
           {success ? (
             <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-200" aria-live="polite">
-              {success}
+              ✓ {success}
             </div>
           ) : null}
 

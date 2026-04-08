@@ -40,5 +40,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
+  // Refresh session to ensure all auth cookies are set in the response
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "Signin succeeded but session not established. Please try again." },
+      { status: 500 },
+    );
+  }
+
   return response;
 }
+

@@ -26,6 +26,8 @@ export async function proxy(request: NextRequest) {
     },
   );
 
+  // Refresh session to ensure tokens are fresh and cookies are up to date
+  // This is critical for production where session might expire between client and server
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -56,3 +58,5 @@ export const config = {
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
+
+
