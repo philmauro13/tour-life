@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Radio, BriefcaseBusiness, LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Radio, BriefcaseBusiness, LogOut, User } from "lucide-react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/lib/actions/auth";
 
 const publicLinks = [
@@ -19,6 +21,29 @@ const authenticatedLinks = [
 
 export function Navbar() {
   const { user, loading } = useAuth();
+  const [profileUsername, setProfileUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    const supabase = createClient();
+
+    const loadProfile = async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (!error && data?.username) {
+        setProfileUsername(data.username);
+      }
+    };
+
+    loadProfile();
+  }, [user]);
 
   if (loading) {
     return (
@@ -73,6 +98,23 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          {user && profileUsername && (
+            <Link
+              href={`/profile/${profileUsername}`}
+              className="inline-flex items-center gap-2 text-sm font-medium text-white/72 transition hover:text-white"
+            >
+              <User className="h-4 w-4" />
+              My Profile
+            </Link>
+          )}
+          {user && (
+            <Link
+              href="/settings/profile"
+              className="text-sm font-medium text-white/72 transition hover:text-white"
+            >
+              Edit Profile
+            </Link>
+          )}
           {user && (
             <form action={signOut}>
               <Button

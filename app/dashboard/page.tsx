@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { BriefcaseBusiness, FileText, Inbox, Plus, UserCheck } from "lucide-react";
+import { BriefcaseBusiness, FileText, Inbox, Plus, User, UserCheck } from "lucide-react";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ApplicationReviewCard } from "@/components/dashboard/application-review-card";
+import { getCurrentUserProfile, ensureProfileForUser } from "@/lib/actions/profiles";
 import { getUserJobs } from "@/lib/actions/jobs";
 import { getUserApplications, getApplicationsReceivedByUser } from "@/lib/actions/applications";
-import { ensureProfileForUser } from "@/lib/actions/profiles";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
@@ -22,6 +22,8 @@ export default async function DashboardPage() {
   }
 
   await ensureProfileForUser();
+  const profile = await getCurrentUserProfile();
+  const profileUrl = profile?.username ? `/profile/${profile.username}` : null;
 
   const [jobs, applications, receivedApplications] = await Promise.all([
     getUserJobs(user.id),
@@ -39,7 +41,37 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Link
+          href="/post"
+          className="inline-flex items-center justify-center gap-2 rounded-[24px] border border-cyan-300/20 bg-cyan-300/5 px-5 py-4 text-sm font-medium text-cyan-100 transition hover:bg-cyan-300/10"
+        >
+          <Plus className="h-4 w-4" />
+          Post a Job
+        </Link>
+        <Link
+          href="/settings/profile"
+          className="inline-flex items-center justify-center gap-2 rounded-[24px] border border-white/10 bg-white/5 px-5 py-4 text-sm font-medium text-white/80 transition hover:bg-white/10"
+        >
+          <UserCheck className="h-4 w-4" />
+          Edit Profile
+        </Link>
+        {profileUrl ? (
+          <Link
+            href={profileUrl}
+            className="inline-flex items-center justify-center gap-2 rounded-[24px] border border-white/10 bg-white/5 px-5 py-4 text-sm font-medium text-white/80 transition hover:bg-white/10"
+          >
+            <User className="h-4 w-4" />
+            View Public Profile
+          </Link>
+        ) : (
+          <div className="rounded-[24px] border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/70">
+            Complete your profile to unlock your public profile page.
+          </div>
+        )}
+      </div>
+
+      <div className="mt-10 grid gap-6 md:grid-cols-3">
         <StatCard label="Active job posts" value={String(jobs.length)} icon={<BriefcaseBusiness className="h-5 w-5" />} />
         <StatCard label="Applications submitted" value={String(applications.length)} icon={<Inbox className="h-5 w-5" />} />
         <StatCard label="Applications received" value={String(receivedApplications.length)} icon={<FileText className="h-5 w-5" />} />
