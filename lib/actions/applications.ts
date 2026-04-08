@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { ApplicationStatus } from "@/types";
 
 export async function getUserApplications(userId: string) {
   const supabase = await createClient();
@@ -48,7 +49,11 @@ export async function getApplicationsReceivedByUser(userId: string) {
         username,
         full_name,
         primary_role,
-        city
+        city,
+        bio,
+        experience_summary,
+        resume_url,
+        availability
       )
     `)
     .eq("jobs.created_by", userId)
@@ -78,29 +83,26 @@ export async function getUserApplicationForJob(jobId: string, userId: string) {
   return data;
 }
 
-export async function getJobApplications(jobId: string) {
+export async function updateApplicationStatus(formData: FormData) {
+  const applicationId = formData.get("applicationId") as string;
+  const status = formData.get("status") as ApplicationStatus;
+
+  if (!applicationId || !status) {
+    throw new Error("Application ID and status are required");
+  }
+
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("applications")
-    .select(`
-      *,
-      profiles (
-        id,
-        username,
-        full_name,
-        primary_role,
-        city
-      )
-    `)
-    .eq("job_id", jobId)
-    .order("created_at", { ascending: false });
+    .update({ status })
+    .eq("id", applicationId);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return data;
+  revalidatePath("/dashboard");
 }
 
 export async function applyToJob(jobId: string, message: string) {

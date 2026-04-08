@@ -56,6 +56,14 @@ export default async function SettingsProfilePage() {
           <label className="text-sm text-white/65">Experience summary</label>
           <Textarea name="experienceSummary" defaultValue={profile.experience_summary || ""} />
         </div>
+        <div className="space-y-2">
+          <label className="text-sm text-white/65">Resume URL</label>
+          <Input name="resumeUrl" type="url" defaultValue={profile.resume_url || ""} placeholder="https://..." />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm text-white/65">Availability</label>
+          <Input name="availability" defaultValue={profile.availability || ""} placeholder="e.g., Available immediately, 2 weeks notice" />
+        </div>
         <div className="mt-4 md:col-span-2">
           <Button type="submit">Save profile</Button>
         </div>

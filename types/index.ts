@@ -12,6 +12,8 @@ export interface Profile {
   avatar_url: string | null;
   specialties?: string[];
   experience_summary?: string | null;
+  resume_url?: string | null;
+  availability?: string | null;
   created_at: string;
   updated_at: string;
 }

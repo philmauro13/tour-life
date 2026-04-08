@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BriefcaseBusiness, FileText, Inbox, Plus, UserCheck } from "lucide-react";
 import { StatCard } from "@/components/dashboard/stat-card";
+import { ApplicationReviewCard } from "@/components/dashboard/application-review-card";
 import { getUserJobs } from "@/lib/actions/jobs";
 import { getUserApplications, getApplicationsReceivedByUser } from "@/lib/actions/applications";
 import { ensureProfileForUser } from "@/lib/actions/profiles";
@@ -100,20 +101,18 @@ export default async function DashboardPage() {
         <section className="glass rounded-[28px] p-6">
           <div>
             <h2 className="text-xl font-semibold">Received applications</h2>
-            <p className="mt-2 text-sm text-white/60">Responses to the jobs you posted.</p>
+            <p className="mt-2 text-sm text-white/60">Review applications for your posted jobs.</p>
           </div>
-          <div className="mt-5 space-y-4">
+          <div className="mt-5 space-y-6">
             {receivedApplications.length ? (
               receivedApplications.map((application) => (
-                <div key={application.id} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-                  <div className="font-medium text-white">{application.jobs?.title || "Unknown job"}</div>
-                  <div className="mt-2 text-sm text-white/65">From: {application.profiles?.full_name || "Crew member"}</div>
-                  <div className="mt-3 text-sm text-white/55">Status: {application.status}</div>
-                </div>
+                <ApplicationReviewCard key={application.id} application={application} />
               ))
             ) : (
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center text-white/60">
-                No applications received yet. Publish a job and keep your posting visible to touring professionals.
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center text-white/60">
+                <FileText className="w-12 h-12 mx-auto mb-4 text-white/30" />
+                <p className="text-lg font-medium mb-2">No applications received yet</p>
+                <p className="text-sm">Publish a job and keep your posting visible to touring professionals.</p>
               </div>
             )}
           </div>

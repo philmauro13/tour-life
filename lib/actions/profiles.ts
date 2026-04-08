@@ -66,6 +66,8 @@ export async function createProfileForUser(
     primary_role: DEFAULT_PRIMARY_ROLE,
     city: DEFAULT_CITY,
     bio: DEFAULT_BIO,
+    resume_url: null,
+    availability: null,
   };
 
   const { data, error } = await supabase
@@ -168,6 +170,8 @@ export async function updateProfile(formData: FormData) {
   const city = formData.get("city") as string;
   const bio = formData.get("bio") as string;
   const experienceSummary = formData.get("experienceSummary") as string;
+  const resumeUrl = formData.get("resumeUrl") as string;
+  const availability = formData.get("availability") as string;
 
   if (!fullName || !username || !primaryRole || !city) {
     throw new Error("Required fields must be filled");
@@ -198,6 +202,8 @@ export async function updateProfile(formData: FormData) {
       city,
       bio,
       experience_summary: experienceSummary,
+      resume_url: resumeUrl || null,
+      availability: availability || null,
     })
     .eq("id", user.id);
 
